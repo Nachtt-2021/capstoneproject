@@ -1,0 +1,11 @@
+pandas==1.5.3
+numpy==1.26.2
+streamlit
+scikit-learn
+pip==23.1.2
+tensorflow==2.15.0
+seaborn
+wordcloud
+textblob
+tensorflow_hub
+nltk==3.6.7
