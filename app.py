@@ -30,7 +30,7 @@ job_description = st.text_area("Masukkan deskripsi pekerjaan di sini:")
 if st.button('Prediksi'):
     if job_description:
         # Text Preprocessing Functions
-        nltk.download('punkt')
+        nltk.download('punkt', quiet=True)
         nltk.download('wordnet')
         nltk.download('averaged_perceptron_tagger')
         nltk.download('stopwords')
