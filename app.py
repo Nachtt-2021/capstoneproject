@@ -23,9 +23,12 @@ import joblib
 # Function to load the model
 @st.cache(allow_output_mutation=True)
 def load_model():
-    custom_objects = {"custom_object_name": custom_object_definition}  # Ganti dengan objek khusus Anda jika ada
     model = tf.keras.models.load_model('job_prediction.h5', custom_objects=custom_objects)
     return model
+
+  # Load the model
+        with st.spinner("Loading Model...."):
+            model = load_model()
 
 # Streamlit App
 st.title('Job Posting Fraud Detection')
@@ -70,10 +73,6 @@ if st.button('Prediksi'):
         sent_length = 500  # Ensure you set this correctly based on your data preprocessing
         job_description_encoded = tokenizer.texts_to_sequences([job_description_processed])
         job_description_padded = pad_sequences(job_description_encoded, padding='pre', maxlen=sent_length)
-        
-        # Load the model
-        with st.spinner("Loading Model...."):
-            model = load_model()
 
         # Make prediction
         prediction = model.predict(job_description_padded)[0][0]
@@ -86,6 +85,11 @@ if st.button('Prediksi'):
         st.warning('Silakan masukkan deskripsi pekerjaan terlebih dahulu.')
 
 # Visualization
+# Load data
+df = pd.read_csv('fake_job_postings.csv')
+df['country'] = df['location'].apply(lambda x: x.split(',')[0])
+df.fillna(' ', inplace=True)
+df = df.drop_duplicates()
 
 st.subheader('Distribusi Fraudulent vs Non-Fraudulent')
 fig, ax = plt.subplots()
