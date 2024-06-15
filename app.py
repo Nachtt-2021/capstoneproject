@@ -76,7 +76,7 @@ if st.button('Prediksi'):
 
 # Visualization
 # Load data
-df = pd.read_csv('/content/fake_job_postings.csv')
+df = pd.read_csv('/path/to/your/fake_job_postings.csv')
 df['country'] = df['location'].apply(lambda x: x.split(',')[0])
 df.fillna(' ', inplace=True)
 df = df.drop_duplicates()
