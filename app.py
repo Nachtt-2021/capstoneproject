@@ -26,10 +26,6 @@ def load_model():
     model = tf.keras.models.load_model('job_prediction.h5', custom_objects=custom_objects)
     return model
 
-  # Load the model
-        with st.spinner("Loading Model...."):
-            model = load_model()
-
 # Streamlit App
 st.title('Job Posting Fraud Detection')
 st.write('Analisis untuk mendeteksi penipuan dalam posting pekerjaan.')
@@ -73,6 +69,10 @@ if st.button('Prediksi'):
         sent_length = 500  # Ensure you set this correctly based on your data preprocessing
         job_description_encoded = tokenizer.texts_to_sequences([job_description_processed])
         job_description_padded = pad_sequences(job_description_encoded, padding='pre', maxlen=sent_length)
+        
+        # Load the model
+        with st.spinner("Loading Model...."):
+            model = load_model()
 
         # Make prediction
         prediction = model.predict(job_description_padded)[0][0]
