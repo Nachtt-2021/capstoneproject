@@ -10,13 +10,12 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import wordnet
-import numpy as np
-from sklearn.model_selection import train_test_split
 import tensorflow as tf
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.preprocessing.text import Tokenizer
 import joblib
+import os
 
 # Function to preprocess text
 def text_preprocessing(text):
@@ -47,14 +46,22 @@ def text_preprocessing(text):
     return text
 
 # Load tokenizer
-tokenizer = joblib.load('tokenizer_file.pkl')
-max_features = 10000  # adjust based on your tokenizer configuration
-sent_length = 500  # adjust based on your tokenizer configuration
+def load_tokenizer(tokenizer_path):
+    try:
+        tokenizer = joblib.load(tokenizer_path)
+    except FileNotFoundError:
+        st.error('Tokenizer file not found. Please make sure tokenizer_file.pkl exists.')
+        st.stop()
+    return tokenizer
 
 # Function to load the model
 @st.cache(allow_output_mutation=True)
-def load_dl_model():
-    model = load_model('job_prediction.h5')  # Load your Keras model here
+def load_dl_model(model_path):
+    try:
+        model = load_model(model_path)
+    except FileNotFoundError:
+        st.error('Model file not found. Please make sure job_prediction.h5 exists.')
+        st.stop()
     return model
 
 # Streamlit App
@@ -69,12 +76,16 @@ def main():
         if job_description:
             # Preprocess the input
             job_description_processed = text_preprocessing(job_description)
+            tokenizer = load_tokenizer('tokenizer_file.pkl')
+            max_features = 10000  # adjust based on your tokenizer configuration
+            sent_length = 500  # adjust based on your tokenizer configuration
+
             job_description_encoded = tokenizer.texts_to_sequences([job_description_processed])
             job_description_padded = pad_sequences(job_description_encoded, padding='pre', maxlen=sent_length)
 
             # Load the deep learning model
             with st.spinner("Loading Model...."):
-                model = load_dl_model()
+                model = load_dl_model('job_prediction.h5')
 
             # Make prediction
             prediction = model.predict(job_description_padded)[0][0]
