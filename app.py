@@ -20,6 +20,13 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.preprocessing.text import Tokenizer
 import joblib
 
+# Function to load the model
+@st.cache(allow_output_mutation=True)
+def load_model():
+    custom_objects = {"custom_object_name": custom_object_definition}  # Ganti dengan objek khusus Anda jika ada
+    model = tf.keras.models.load_model('job_prediction.h5', custom_objects=custom_objects)
+    return model
+
 # Streamlit App
 st.title('Job Posting Fraud Detection')
 st.write('Analisis untuk mendeteksi penipuan dalam posting pekerjaan.')
@@ -64,7 +71,11 @@ if st.button('Prediksi'):
         job_description_encoded = tokenizer.texts_to_sequences([job_description_processed])
         job_description_padded = pad_sequences(job_description_encoded, padding='pre', maxlen=sent_length)
         
-        model = tf.keras.models.load_model('job_prediction.h5')
+        # Load the model
+        with st.spinner("Loading Model...."):
+            model = load_model()
+
+        # Make prediction
         prediction = model.predict(job_description_padded)[0][0]
         
         if prediction >= 0.5:
