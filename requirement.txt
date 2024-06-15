@@ -9,3 +9,4 @@ wordcloud
 textblob
 tensorflow_hub
 nltk==3.6.7
+joblib
