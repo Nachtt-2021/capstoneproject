@@ -86,11 +86,6 @@ if st.button('Prediksi'):
         st.warning('Silakan masukkan deskripsi pekerjaan terlebih dahulu.')
 
 # Visualization
-# Load data
-df = pd.read_csv('fake_job_postings.csv')
-df['country'] = df['location'].apply(lambda x: x.split(',')[0])
-df.fillna(' ', inplace=True)
-df = df.drop_duplicates()
 
 st.subheader('Distribusi Fraudulent vs Non-Fraudulent')
 fig, ax = plt.subplots()
